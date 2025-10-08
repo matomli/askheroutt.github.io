@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ask Her Out — Trick Mode</title>
+  <style>
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b1220;color:#e6eef8;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+    .box{width:360px;background:linear-gradient(180deg,#071226,#071b2b);padding:28px;border-radius:14px; text-align:center;box-shadow:0 10px 40px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px}
+    p{margin:0 0 18px;color:#b9cfe4}
+    .area{position:relative;height:110px}
+    .btn{position:absolute;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .yes{left:50%;transform:translateX(-50%);bottom:16px;background:linear-gradient(90deg,#34d399,#06b6d4);color:#021014}
+    .no{right:16px;bottom:16px;background:#111827;border:2px solid rgba(255,255,255,0.06);color:#e6eef8}
+    .result{margin-top:18px;min-height:22px}
+    @media (max-width:420px){.box{width:92%}}
+  </style>
+</head>
+<body>
+  <div class="box" role="main" aria-labelledby="q">
+    <h1 id="q">Would you go out with me?</h1>
+    <p>Tap the heart if yes. The other button is... shy.</p>
+
+    <div class="area" id="area">
+      <button id="yes" class="btn yes" aria-label="Yes">Yes ❤️</button>
+      <button id="no" class="btn no" aria-label="No">No 🙈</button>
+    </div>
+
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <script>
+    const yes = document.getElementById('yes');
+    const no  = document.getElementById('no');
+    const area = document.getElementById('area');
+    const result = document.getElementById('result');
+
+    yes.addEventListener('click', () => {
+      result.textContent = "Awesome! ❤️ I'll reach out to set something up.";
+      yes.disabled = no.disabled = true;
+    });
+
+    // Make the No button dodge mouse/touch
+    function moveNo() {
+      const pad = 8; // keep some padding from edges
+      const rect = area.getBoundingClientRect();
+      const maxX = rect.width - no.offsetWidth - pad;
+      const maxY = rect.height - no.offsetHeight - pad;
+
+      let x = Math.random() * maxX;
+      let y = Math.random() * maxY;
+
+      no.style.left = x + 'px';
+      no.style.top  = y + 'px';
+    }
+
+    // On hover or touchstart, move the button
+    no.addEventListener('mouseenter', moveNo);
+    no.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
+
+    // If someone somehow manages to click it (keyboard or extremely fast), handle it:
+    no.addEventListener('click', () => {
+      result.textContent = "Oh! You pressed No. Thanks for being honest.";
+      yes.disabled = no.disabled = true;
+    });
+
+    // place initially so layout is nice
+    window.addEventListener('load', () => {
+      // position yes centered, no near right-bottom
+      yes.style.left = ((area.clientWidth - yes.offsetWidth) / 2) + 'px';
+      yes.style.top  = (area.clientHeight - yes.offsetHeight - 16) + 'px';
+      no.style.left = (area.clientWidth - no.offsetWidth - 16) + 'px';
+      no.style.top = (area.clientHeight - no.offsetHeight - 16) + 'px';
+    });
+
+    // keep buttons inside if window resizes
+    window.addEventListener('resize', () => {
+      yes.style.left = ((area.clientWidth - yes.offsetWidth) / 2) + 'px';
+      yes.style.top  = (area.clientHeight - yes.offsetHeight - 16) + 'px';
+      no.style.left = (area.clientWidth - no.offsetWidth - 16) + 'px';
+      no.style.top = (area.clientHeight - no.offsetHeight - 16) + 'px';
+    });
+  </script>
+</body>
+</html>
